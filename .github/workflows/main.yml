@@ -1,0 +1,17 @@
+name: Public SSH Runner (Tmate)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  tmate-ssh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: false # Blocks until manually detached or timed out
