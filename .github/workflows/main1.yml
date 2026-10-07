@@ -1,0 +1,32 @@
+name: Public SSH Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ssh-session:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Setup Tmate Directly
+        run: |
+          # 1. Install tmate
+          sudo apt-get update && sudo apt-get install -y tmate openssh-client
+
+          # 2. Start tmate in background with custom socket
+          tmate -S /tmp/tmate.sock new-session -d
+          tmate -S /tmp/tmate.sock wait tmate-ready
+
+          # 3. Print the public connection details clearly
+          echo "=========================================================="
+          echo "SSH CONNECTION COMMAND:"
+          tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+          echo ""
+          echo "WEB BROWSER TERMINAL URL:"
+          tmate -S /tmp/tmate.sock display -p '#{tmate_web}'
+          echo "=========================================================="
+
+      - name: Keep Runner Alive
+        run: |
+          echo "Session is live! Sleeping for 6 hours..."
+          sleep 21600
